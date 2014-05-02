@@ -1,21 +1,18 @@
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Scanner;
+import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
 
 import junit.framework.AssertionFailedError;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -23,10 +20,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.RegularExpression;
-import com.sun.xml.internal.ws.util.xml.NodeListIterator;
+
 
 
 
@@ -76,11 +71,15 @@ public class RMN {
 	static int REQUEST_TYPE;
 	static int MAX_WAIT;
 	
+	static Scanner scanner = new Scanner(System.in);
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 				
 		// conditioning the app
-		conditioningApp(RequestType.NEW, 40);
+		System.out.print("RequestType: [FULL 0] [NEW 1] > ");
+		int requestType = scanner.nextInt();
+		conditioningApp(requestType, 40);
 				
 		// create output file
 		initOutputFile();
@@ -105,6 +104,7 @@ public class RMN {
 		parseXML();
 		
 		driver = new FirefoxDriver();
+		java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
 		wait = new WebDriverWait(driver, 40); // wait up to 40 seconds for a condition
 					
 		String baseUrl = "http://www.retailmenot.com/community/login/";
@@ -233,7 +233,8 @@ public class RMN {
 			}
 			
 			try {
-				Assert.assertEquals(driver.findElementByCssSelector("h4").getText(), "Done");
+				Assert.assertEquals(driver.findElementByCssSelector("h4").getText(), "Done.");
+				driver.close();
 			}
 			catch (AssertionFailedError e) {
 				driver.quit();
